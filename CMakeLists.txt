@@ -12,6 +12,13 @@ if (COMMAND cmake_policy)
     # Honor the visibility properties for SHARED target types only
     cmake_policy (SET CMP0063 OLD)
 endif ()
+
+IF( ${CMAKE_COMPILER_IS_GNUCXX} )
+  ADD_DEFINITIONS(-static-libgcc -static-libstdc++)
+  SET(CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_CXX_LINK_EXECUTABLE}
+-static-libgcc -static-libstdc++")
+ENDIF( ${CMAKE_COMPILER_IS_GNUCXX} )
+
 # Set project name
 project (GrassTest)
 # Set CMake modules search path
