@@ -232,7 +232,7 @@ void Water::MoveCamera(float timeStep)
         cameraNode_->Translate(Vector3::RIGHT * MOVE_SPEED * timeStep);
 
 	Vector3 pos=cameraNode_->GetPosition();
-	pos.y_=terrain_->GetHeight(pos) + 1.0;
+	pos.y_=terrain_->GetHeight(pos) + 2.0;
 	cameraNode_->SetPosition(pos);
 }
 
@@ -252,4 +252,6 @@ void Water::HandleUpdate(StringHash eventType, VariantMap& eventData)
 	campos.z_=std::floor(campos.z_ / spacing.z_) * spacing.z_;
 	campos.y_=-0.01;
 	grassnode_->SetPosition(campos);
+
+    grassmat_->SetShaderParameter("DistCamPos", cameraNode_->GetWorldPosition());
 }
