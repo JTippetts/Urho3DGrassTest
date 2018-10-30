@@ -12,6 +12,8 @@ uniform vec4 cHeightData;  // terrain width, terrain height, spacing.x, spacing.
 uniform sampler2D sHeightMap1;
 uniform sampler2D sCoverMap2;
 
+uniform vec3 cDistCamPos;
+
 void VS()
 {
     mat4 modelMatrix = iModelMatrix;
@@ -32,8 +34,8 @@ void VS()
 	float htscale=cHeightData.w*255.0;
 	float ht=htt.r*htscale + htt.g*cHeightData.w;
 
-	float dx=worldPos.x - cCameraPos.x;
-	float dz=worldPos.z - cCameraPos.z;
+	float dx=worldPos.x - cDistCamPos.x;
+	float dz=worldPos.z - cDistCamPos.z;
 	float dist=sqrt(dx*dx+dz*dz);
 	dist=(dist-30.0)/(0.7*30.0-30.0);
 	dist=clamp(dist,0.0,1.0);
