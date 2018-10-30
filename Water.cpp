@@ -113,7 +113,7 @@ void Water::CreateScene()
     auto* terrain = terrainNode->CreateComponent<Terrain>();
     terrain->SetPatchSize(64);
     terrain->SetSpacing(Vector3(2.0f, 0.5f, 2.0f)); // Spacing between vertices and vertical resolution of the height map
-    terrain->SetSmoothing(true);
+    terrain->SetSmoothing(false);
     terrain->SetHeightMap(cache->GetResource<Image>("Terrain/elev.png"));
 	Material *mat=cache->GetResource<Material>("Materials/GrassTest.xml");
     terrain->SetMaterial(mat);

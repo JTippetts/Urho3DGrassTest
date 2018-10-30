@@ -70,6 +70,7 @@ void VS()
 	float dist=sqrt(dx*dx+dz*dz);
 	dist=(dist-30.0)/(0.7*30.0-30.0);
 	dist=clamp(dist,0.0,1.0);
+	//dist=1.0;
 	worldPos.y=worldPos.y*dist*cov.g + ht;
 
     gl_Position = GetClipPos(worldPos);

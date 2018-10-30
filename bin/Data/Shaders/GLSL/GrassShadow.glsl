@@ -7,7 +7,7 @@
 #else
     varying vec2 vTexCoord;
 #endif
-
+varying vec4 vWorldPos;
 uniform vec4 cHeightData;  // terrain width, terrain height, spacing.x, spacing.y
 uniform sampler2D sHeightMap1;
 uniform sampler2D sCoverMap2;
@@ -37,9 +37,11 @@ void VS()
 	float dist=sqrt(dx*dx+dz*dz);
 	dist=(dist-30.0)/(0.7*30.0-30.0);
 	dist=clamp(dist,0.0,1.0);
+	dist=1.0;
 	worldPos.y=worldPos.y*dist*cov.g + ht;
 
     gl_Position = GetClipPos(worldPos);
+	vWorldPos = vec4(worldPos, GetDepth(gl_Position));
     #ifdef VSM_SHADOW
         vTexCoord = vec4(GetTexCoord(iTexCoord), gl_Position.z, gl_Position.w);
     #else
@@ -49,11 +51,22 @@ void VS()
 
 void PS()
 {
-    #ifdef ALPHAMASK
-        float alpha = texture2D(sDiffMap, vTexCoord.xy).a;
-        if (alpha < 0.5)
-            discard;
-    #endif
+    float tu=vWorldPos.x / cHeightData.z;
+	float tv=vWorldPos.z / cHeightData.z;
+	//vec2 htuv=vec2(worldPos.x/(cHeightData.x)+0.5, 1.0-(worldPos.z/(cHeightData.y)+0.5));
+	vec2 htuv=vec2((tu/cHeightData.x)+0.5, 1.0-((tv/cHeightData.y)+0.5));
+	vec4 htt=texture2D(sHeightMap1, htuv);
+
+	//htuv=vec2(floor(tu)/cHeightData.x+0.5, 1.0-(floor(tv)/cHeightData.y+0.5));
+	vec4 cov=texture2D(sCoverMap2, htuv);
+	float u=vTexCoord.x*0.25+floor(cov.a*4.0)*0.25;
+
+    // Get material diffuse albedo
+	vec4 diffInput = texture2D(sDiffMap, vec2(u,vTexCoord.y));
+
+	//diffInput=cov;
+
+	if (diffInput.a < 0.5) discard;
 
     #ifdef VSM_SHADOW
         float depth = vTexCoord.z / vTexCoord.w * 0.5 + 0.5;
